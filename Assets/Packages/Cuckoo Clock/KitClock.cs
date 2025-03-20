@@ -16,13 +16,15 @@ public class KitClock : MonoBehaviour
     public float t;
     public int hour = 0;
 
-    public UnityEvent OnTheHour;
+    public UnityEvent<int> OnTheHour;
 
     void Start()
 
     {
-      //  brake = true;
-       clockRunning = StartCoroutine(MoveTheClock());
+       
+
+    //  brake = true;
+    clockRunning = StartCoroutine(MoveTheClock());
 
 
     }
@@ -58,7 +60,7 @@ public class KitClock : MonoBehaviour
         {
             hour = 1;
         }
-        OnTheHour.Invoke();
+        OnTheHour.Invoke(hour);
     
     
     }
