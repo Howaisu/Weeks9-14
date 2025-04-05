@@ -6,7 +6,14 @@ public class PlayerMovement : MonoBehaviour
     public GameObject secondLayer;
     public Vector3 mousePos;
 
+    //
+    public Vector3 pointing; // where the player pointing at
+
     public float moveSpeed = 5f; // 玩家移动速度，可在Inspector中调整
+
+    //
+    public GameObject bulletPrefab; // 子弹Prefab
+    public Transform firePoint; // 子弹生成的初始位置（作为玩家子对象）
 
     void Update()
     {
@@ -14,6 +21,13 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = mousePos - transform.position;
         spinMaker();
         moveMaker(direction);
+
+        //shooting
+        // 鼠标点击发射子弹
+        if (Input.GetMouseButtonDown(0))
+        {
+            FireBullet();
+        }
     }
 
     void spinMaker()
@@ -32,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
             // 此处采用 Quaternion.AngleAxis 精确旋转对象
             secondLayer.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
+
+        pointing = direction;
     }
     void moveMaker(Vector3 mouse)
     {
@@ -53,5 +69,14 @@ public class PlayerMovement : MonoBehaviour
           
             Debug.Log(Direction);
         }
+    }
+
+    //
+    void FireBullet()
+    {
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation, firePoint);
+
+        // 调用子弹的Fire方法，让子弹向前运动
+        bullet.GetComponent<ShootingManager>().Fire();
     }
 }

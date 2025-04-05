@@ -1,18 +1,31 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ShootingManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float speed = 10f;
+    private bool isFired = false;
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (isFired)
+        {
+            transform.position += transform.up * speed * Time.deltaTime;
+        }
+    }
+
+    public void Fire()
+    {
+        isFired = true;
+        transform.parent = null;
+
+        // 启动协程销毁子弹
+        StartCoroutine(DestroyAfterTime(10f));
+    }
+
+    private IEnumerator DestroyAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+        Destroy(gameObject);
     }
 }
