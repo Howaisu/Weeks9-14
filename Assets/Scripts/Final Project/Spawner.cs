@@ -14,7 +14,7 @@ public class Spawner : MonoBehaviour
     public int star2Count = 150;
 
     public GameObject enemy;
-    [SerializeField] int howmanyEnemy = 60;
+    public int howmanyEnemy = 60;
     public List<GameObject> targetEnemy;
 
     public GameObject player;  // Reference to the player GameObject

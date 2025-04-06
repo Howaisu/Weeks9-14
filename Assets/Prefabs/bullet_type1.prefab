@@ -99,3 +99,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isFired: 1
   speed: 5
+  enemySpawner: {fileID: 0}
