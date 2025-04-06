@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9767596223173810}
   - component: {fileID: 6083792128167949866}
+  - component: {fileID: 7018937319253720093}
   m_Layer: 0
   m_Name: bullet_type1
   m_TagString: Untagged
@@ -26,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 8111657634669436837}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.81, y: 2.57, z: 0}
-  m_LocalScale: {x: 0.11339493, y: 1.4443476, z: 0.71619356}
+  m_LocalPosition: {x: -1.81, y: 2.77, z: 0}
+  m_LocalScale: {x: 0.10890791, y: 1.3871951, z: 0.68785393}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -84,3 +85,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7018937319253720093
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8111657634669436837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0906b3047ead5c4eb952a5ac8244940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isFired: 1
+  speed: 5

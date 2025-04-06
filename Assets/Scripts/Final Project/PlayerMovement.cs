@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,9 +12,8 @@ public class PlayerMovement : MonoBehaviour
 
     public float moveSpeed = 5f; // 玩家移动速度，可在Inspector中调整
 
-    //
-    public GameObject bulletPrefab; // 子弹Prefab
-    public Transform firePoint; // 子弹生成的初始位置（作为玩家子对象）
+
+
 
     void Update()
     {
@@ -24,10 +24,7 @@ public class PlayerMovement : MonoBehaviour
 
         //shooting
         // 鼠标点击发射子弹
-        if (Input.GetMouseButtonDown(0))
-        {
-            FireBullet();
-        }
+     
     }
 
     void spinMaker()
@@ -42,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
         if (direction.sqrMagnitude > 0.001f)
         {
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            //
+            angle -= 90;
 
             // 此处采用 Quaternion.AngleAxis 精确旋转对象
             secondLayer.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
@@ -67,16 +66,10 @@ public class PlayerMovement : MonoBehaviour
             // Move playerFish in the direction of the mouse
             playerShip.transform.position += Direction * moveSpeed * Time.deltaTime;
           
-            Debug.Log(Direction);
+         //   Debug.Log(Direction);
         }
     }
 
     //
-    void FireBullet()
-    {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation, firePoint);
-
-        // 调用子弹的Fire方法，让子弹向前运动
-        bullet.GetComponent<ShootingManager>().Fire();
-    }
+ 
 }
