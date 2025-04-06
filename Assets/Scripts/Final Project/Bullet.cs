@@ -5,7 +5,14 @@ public class Bullet : MonoBehaviour
     public bool isFired = false;
     public float speed = 5;
 
+    public GameObject enemySpawner;
     private Spawner spawner; // 引用Spawner脚本
+    private void Start()
+    {
+        spawner = enemySpawner.GetComponent<Spawner>();
+
+    }
+
     void Update()
     {
         if (isFired)
@@ -13,7 +20,7 @@ public class Bullet : MonoBehaviour
             transform.SetParent(null);
             transform.position += transform.up * speed * Time.deltaTime;
 
-            //CheckHitEnemies(); // 每帧检测碰撞
+            CheckHitEnemies(); // 每帧检测碰撞
         }
         else
         {
@@ -39,34 +46,35 @@ public class Bullet : MonoBehaviour
     }
 
 
-    //public void CheckHitEnemies()
-    //{
-    //    Debug.Log("processing the Hitting Enemies");
-    //    if (spawner == null || spawner.targetEnemy == null) return;
+    public void CheckHitEnemies()
+    {
+       // Debug.Log("processing the Hitting Enemies");
+        if (spawner == null || spawner.targetEnemy == null) return;
 
-    //    for (int i = spawner.targetEnemy.Count - 1; i >= 0; i--)
-    //    {
-    //        GameObject enemy = spawner.targetEnemy[i];
+        for (int i = spawner.targetEnemy.Count - 1; i >= 0; i--)
+        {
+           
+            GameObject enemy = spawner.targetEnemy[i];
+           
+            //if (enemy == null) continue;
 
-    //        if (enemy == null) continue;
+            float distance = Vector2.Distance(transform.position, enemy.transform.position);
 
-    //        float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            if (distance < 0.5f)
+            {
+                Destroy(enemy);
+                spawner.targetEnemy.RemoveAt(i);
 
-    //        if (distance < 0.5f)
-    //        {
-    //            Destroy(enemy);
-    //            spawner.targetEnemy.RemoveAt(i);
+                Debug.Log("?? Enemy destroyed!");
 
-    //            Debug.Log("?? Enemy destroyed!");
-
-    //            // 如果你想让子弹也消失
-    //            Destroy(gameObject);
-    //            break;
-    //        }
-    //    }
+                // 如果你想让子弹也消失
+                Destroy(gameObject);
+                break;
+            }
+        }
 
 
-    //}
+    }
 }
 
 

@@ -6,13 +6,11 @@ public class ShootingManager : MonoBehaviour
     public GameObject thingPrefab;
     public Bullet currentThing;
 
-    //
-   // public GameObject dummyShot;
+    //public GameObject dummyShot;
 
     public float spawnFrequency = 0.2f;
 
-    // 类级变量，记住上一次shoot状态
-    // private bool shootSecondBullet = false;
+    public GameObject spawnerObject; // ? 拖入 Spawner GameObject（带 Spawner 脚本的）
 
     void Start()
     {
@@ -28,38 +26,33 @@ public class ShootingManager : MonoBehaviour
     {
         while (true)
         {
-
             yield return new WaitForSeconds(spawnFrequency);
 
             if (currentThing == null)
             {
-
                 GameObject real = Instantiate(thingPrefab, transform.position, transform.rotation);
-                // ? 在这里动态传入 Spawner 的引用
 
+                // ? 把 spawnerObject 传入 Bullet 脚本中
+                Bullet bulletScript = real.GetComponent<Bullet>();
+                if (bulletScript != null)
+                {
+                    bulletScript.enemySpawner = spawnerObject;
+                }
 
                 real.transform.parent = transform;
-
-                currentThing = real.GetComponent<Bullet>();
-                //Debug.Log("Bullet Loaded");
+                currentThing = bulletScript;
             }
         }
     }
 
-
     void Shoots()
     {
-        // 1. 按下鼠标，发射真实子弹
         if (Input.GetMouseButtonDown(0) && currentThing != null)
         {
             currentThing.Fire();
             currentThing = null;
-
-
-            //Debug.Log(" Shoot Bullet");
         }
     }
 }
-
 
 
