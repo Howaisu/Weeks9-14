@@ -2,79 +2,82 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public static event System.Action OnBulletDestroyed;
+
     public bool isFired = false;
-    public float speed = 5;
+    public float speed = 20f;
 
     public GameObject enemySpawner;
-    private Spawner spawner; // 引用Spawner脚本
-    private void Start()
-    {
-        spawner = enemySpawner.GetComponent<Spawner>();
+    private Spawner spawner;
 
+    public ShootingManager shootingManager;
+
+    void Start()
+    {
+        // 只有实例才能 GetComponent
+        if (enemySpawner != null && enemySpawner.scene.IsValid())
+        {
+            spawner = enemySpawner.GetComponent<Spawner>();
+        }
     }
 
     void Update()
     {
         if (isFired)
         {
-            transform.SetParent(null);
-            transform.position += transform.up * speed * Time.deltaTime;
+            if (transform.parent != null)
+                transform.SetParent(null);
 
-            CheckHitEnemies(); // 每帧检测碰撞
-        }
-        else
-        {
-            //Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            //Vector2 direction = mousePos - (Vector2)transform.position;
-            //transform.up = direction;
+            transform.position += transform.up * speed * Time.deltaTime;
+            CheckHitEnemies();
         }
     }
 
     public void Fire()
     {
-        isFired = true;
-
-        // 先彻底脱离父级
-        if (transform.parent != null)
+        if (!gameObject.scene.IsValid())
         {
-            transform.SetParent(null); // ? 只调用一次，确保是运行时实例
+            Debug.LogWarning("?? Attempted to fire a prefab, not a scene instance!");
+            return;
         }
 
-        Debug.Log("Shoot out");
+        isFired = true;
 
-        Destroy(gameObject, 5);
+        if (transform.parent != null)
+            transform.SetParent(null);
+
+        Destroy(gameObject, 5f); // 超时自毁
     }
-
 
     public void CheckHitEnemies()
     {
-       // Debug.Log("processing the Hitting Enemies");
         if (spawner == null || spawner.targetEnemy == null) return;
 
         for (int i = spawner.targetEnemy.Count - 1; i >= 0; i--)
         {
-           
             GameObject enemy = spawner.targetEnemy[i];
-           
-            //if (enemy == null) continue;
+            if (enemy == null) continue;
 
             float distance = Vector2.Distance(transform.position, enemy.transform.position);
-
             if (distance < 0.5f)
             {
                 Destroy(enemy);
                 spawner.targetEnemy.RemoveAt(i);
 
-                Debug.Log("?? Enemy destroyed!");
+                Debug.Log("?? BOOM! Enemy destroyed!");
 
-                // 如果你想让子弹也消失
-                Destroy(gameObject);
+                Destroy(gameObject); // 自动触发 OnDestroy()
                 break;
             }
         }
+    }
 
+    void OnDestroy()
+    {
+        // 确保不是 prefab 资源
+        if (!gameObject.scene.IsValid()) return;
 
+        OnBulletDestroyed?.Invoke(); // 事件广播
+        Debug.Log("?? Bullet destroyed and event fired");
     }
 }
-
-
