@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
+using UnityEngine.UI;
+
+
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -18,6 +21,12 @@ public class PlayerMovement : MonoBehaviour
 
     public GameObject TopLeft;
     public GameObject BottomRight;
+    //BOOSTER
+    public float boostedSpeed = 15f; // 提升的速度
+    public float boostTime = 5f; // 提升速度的持续时间
+    private Coroutine speedBoostCoroutine;
+    public Slider boostSlider; // 用于显示倒计时的Slider
+    public GameObject speedText;
 
 
 
@@ -90,10 +99,60 @@ public class PlayerMovement : MonoBehaviour
 
     void speedup()
     {
-        moveSpeed = moveSpeed + 0.2f; //It's called not once, but would loop more than one time(like a second), so it would get a number around 2-3
-        Debug.Log("---Listener Activated: collision with speed up prefab---");
+        //moveSpeed = moveSpeed + 0.2f; //It's called not once, but would loop more than one time(like a second), so it would get a number around 2-3
+        //Debug.Log("---Listener Activated: collision with speed up prefab---");
+
+        
+        if (speedBoostCoroutine != null)
+        {
+            StopCoroutine(speedBoostCoroutine);
+        }
+        // The coroutine get reset each time the coroutine starts
+        speedBoostCoroutine = StartCoroutine(SpeedBoostCoroutine());
 
     }
+    //THis is the coroutine for the boost
+    IEnumerator SpeedBoostCoroutine()
+    {
+        moveSpeed = boostedSpeed; // Change the speed to the speed that boosting to
+        Debug.Log("---Listener Activated: collision with speed up prefab---");
+
+        // 
+        if (boostSlider != null)
+        {
+            boostSlider.maxValue = boostTime;
+            boostSlider.value = boostTime;
+            boostSlider.gameObject.SetActive(true); // 显示 Slider
+        }
+        if (speedText != null)
+        {   
+            speedText.SetActive(true);
+        }
+
+        float timer = boostTime;
+        while (timer > 0)
+        {
+            timer -= Time.deltaTime;
+            if (boostSlider != null)
+            {
+                boostSlider.value = timer; // 更新 Slider
+            }
+            yield return null; // 等待下一帧
+        }
+
+        moveSpeed = 5f; // 恢复默认速度
+        if (boostSlider != null)
+        {
+            boostSlider.gameObject.SetActive(false); // 隐藏 Slider
+        }
+        if (speedText != null)
+        {
+            speedText.SetActive(false);
+        }
+        speedBoostCoroutine = null; // reset the reference of the corouine
+    }
+
+
     //always have problem witih the z value so I lock this ship's z to 0
     void LockPlayerZPosition()
     {
