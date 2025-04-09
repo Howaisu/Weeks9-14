@@ -4,14 +4,12 @@ using UnityEngine;
 public class ShootingManager : MonoBehaviour
 {
     // public GameObject thingPrefab; This is for the first experiment,It is based on the in-class script
-
-    //ALL THE LASER BULLET TYPES'PREFAB
+    //ALL THE LASER BULLET TYPES'PREFAB:
     public GameObject laserTypeOne;
     public GameObject laserTypeTwo;
     public GameObject laserTypeThree;
-
-
-    //
+    //The Laser Type: 
+    public int currentLaserType;
 
 
     //Reference of the Bullet Class
@@ -25,7 +23,7 @@ public class ShootingManager : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(GenerateRoutine());
+        StartCoroutine(GenerateRoutine()); //RUN the loop ALL TIME in game
     }
 
     void Update()
@@ -33,7 +31,7 @@ public class ShootingManager : MonoBehaviour
         Shoots();
     }
 
-    IEnumerator GenerateRoutine()
+    IEnumerator GenerateRoutine() //reloading
     {
         while (true)
         {
@@ -41,16 +39,34 @@ public class ShootingManager : MonoBehaviour
 
             if (currentThing == null)
             {
-                GameObject real = Instantiate(laserTypeOne, transform.position, transform.rotation);
+                GameObject laser;
+                if (currentLaserType == 1)
+                {
+                    laser = Instantiate(laserTypeOne, transform.position, transform.rotation);
+                }
+                else if (currentLaserType == 2)
+                {
+                     laser = Instantiate(laserTypeTwo, transform.position, transform.rotation);
+                }
+                else if (currentLaserType == 3)
+                {
+                     laser = Instantiate(laserTypeThree, transform.position, transform.rotation);
+                }
+                else
+                {
+                     laser = Instantiate(laserTypeOne, transform.position, transform.rotation);
+                }
 
-                // ? 把 spawnerObject 传入 Bullet 脚本中
-                Bullet bulletScript = real.GetComponent<Bullet>();
+
+
+                //  把 spawnerObject 传入 Bullet 脚本中
+                Bullet bulletScript = laser.GetComponent<Bullet>();
                 if (bulletScript != null)
                 {
                     bulletScript.enemySpawner = spawnerObject;
                 }
 
-                real.transform.parent = transform;
+                laser.transform.parent = transform;
                 currentThing = bulletScript;
             }
         }
@@ -63,5 +79,30 @@ public class ShootingManager : MonoBehaviour
             currentThing.Fire();
             currentThing = null;
         }
+    }
+    //Item: Shooting Speed Up
+    void ShootSpeedUp()
+    {
+
+        spawnFrequency = spawnFrequency / 2;
+    }
+    //Switch Buttons
+    public void ChangeToLaserOne()
+    {
+        currentLaserType = 1;
+        Debug.Log(currentLaserType);
+    
+    }
+    public void ChangeToLaserTwo()
+    {
+        currentLaserType = 2;
+        Debug.Log(currentLaserType);
+
+    }
+    public void ChangeToLaserThree()
+    {
+        currentLaserType = 3;
+        Debug.Log(currentLaserType);
+
     }
 }
