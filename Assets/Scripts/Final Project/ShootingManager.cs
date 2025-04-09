@@ -3,37 +3,34 @@ using UnityEngine;
 
 public class ShootingManager : MonoBehaviour
 {
-    public GameObject thingPrefab;            // 子弹 prefab
-    public Bullet currentThing;               // 当前正在装填的子弹
-    public float spawnFrequency = 0.2f;       // 射击频率（间隔时间）
-    public GameObject spawnerObject;          // Spawner GameObject（用于传给 Bullet）
+    // public GameObject thingPrefab; This is for the first experiment,It is based on the in-class script
 
-    private Coroutine generateCoroutine;      // 唯一协程引用
+    //ALL THE LASER BULLET TYPES'PREFAB
+    public GameObject laserTypeOne;
+    public GameObject laserTypeTwo;
+    public GameObject laserTypeThree;
+
+
+    //
+
+
+    //Reference of the Bullet Class
+    public Bullet currentThing;
+
+    //public GameObject dummyShot;
+
+    public float spawnFrequency = 0.2f;
+
+    public GameObject spawnerObject; //  拖入 Spawner GameObject（带 Spawner 脚本的）
 
     void Start()
     {
-        generateCoroutine = StartCoroutine(GenerateRoutine());
+        StartCoroutine(GenerateRoutine());
     }
 
     void Update()
     {
         Shoots();
-    }
-
-    void OnEnable()
-    {
-        Bullet.OnBulletDestroyed += HandleBulletDestroyed;
-    }
-
-    void OnDisable()
-    {
-        Bullet.OnBulletDestroyed -= HandleBulletDestroyed;
-    }
-
-    void HandleBulletDestroyed()
-    {
-        currentThing = null;
-        // 不再重复启协程，协程自动检测 currentThing
     }
 
     IEnumerator GenerateRoutine()
@@ -44,13 +41,13 @@ public class ShootingManager : MonoBehaviour
 
             if (currentThing == null)
             {
-                GameObject real = Instantiate(thingPrefab, transform.position, transform.rotation);
+                GameObject real = Instantiate(laserTypeOne, transform.position, transform.rotation);
 
+                // ? 把 spawnerObject 传入 Bullet 脚本中
                 Bullet bulletScript = real.GetComponent<Bullet>();
                 if (bulletScript != null)
                 {
                     bulletScript.enemySpawner = spawnerObject;
-                    bulletScript.shootingManager = this;
                 }
 
                 real.transform.parent = transform;
@@ -64,7 +61,7 @@ public class ShootingManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && currentThing != null)
         {
             currentThing.Fire();
-            currentThing = null; // 主动清除引用，保险
+            currentThing = null;
         }
     }
 }

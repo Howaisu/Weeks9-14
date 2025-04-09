@@ -20,17 +20,30 @@ public class Spawner : MonoBehaviour
     public GameObject player;  // Reference to the player GameObject
 
     public float npcSpeed = 2f;
+    //Items
+    //1
+
+    public int howmanyItemsA = 10;
+    public float floatingSpeed = 1f;
+    public GameObject speedingItem;
+    public List<GameObject> targetItemA;
+
+    //2
+    public int howmanyItemsB = 15;
+    public GameObject shootingItem;
+    public List<GameObject> targetItemB;
 
     void Start()
     {
         GenerateStarsType1();
         GenerateStarsType2();
         spawnController();
+        itemGenerator();
     }
 
     void Update()
     {
-        MoveEnemiesTowardsPlayer();
+       // MoveEnemiesTowardsPlayer();
     }
 
     void GenerateStarsType1()
@@ -88,17 +101,43 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    void MoveEnemiesTowardsPlayer()
-    {
-        if (player == null) return;
+    //Item Generate
 
-        foreach (GameObject enemyObj in targetEnemy)
+    void itemGenerator()
+    {
+        targetItemA = new List<GameObject>();
+
+        Vector3 topLeftPos = topLeft.transform.position;
+        Vector3 downBottomPos = downBottom.transform.position;
+
+        float minX = Mathf.Min(topLeftPos.x, downBottomPos.x);
+        float maxX = Mathf.Max(topLeftPos.x, downBottomPos.x);
+        float minY = Mathf.Min(topLeftPos.y, downBottomPos.y);
+        float maxY = Mathf.Max(topLeftPos.y, downBottomPos.y);
+
+        for (int i = 0; i < howmanyItemsA; i++)
         {
-            if (enemyObj != null)
-            {
-                Vector3 direction = (player.transform.position - enemyObj.transform.position).normalized;
-                enemyObj.transform.position += direction * npcSpeed * Time.deltaTime;
-            }
+            float randomX = Random.Range(minX, maxX);
+            float randomY = Random.Range(minY, maxY);
+
+            GameObject newTarget = Instantiate(speedingItem);
+            newTarget.transform.position = new Vector3(randomX, randomY, 0);
+
+            targetItemA.Add(newTarget);
         }
     }
+
+    //void MoveEnemiesTowardsPlayer()
+    //{
+    //    if (player == null) return;
+
+    //    foreach (GameObject enemyObj in targetEnemy)
+    //    {
+    //        if (enemyObj != null)
+    //        {
+    //            Vector3 direction = (player.transform.position - enemyObj.transform.position).normalized;
+    //            enemyObj.transform.position += direction * npcSpeed * Time.deltaTime;
+    //        }
+    //    }
+    //}
 }
