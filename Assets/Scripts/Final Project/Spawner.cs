@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Spawner : MonoBehaviour
 {
@@ -21,18 +22,21 @@ public class Spawner : MonoBehaviour
 
     public float npcSpeed = 2f;
     //Items
-    //1
-
+    //1 MOVEMENT SPEED
     public int howmanyItemsA = 10;
     public float floatingSpeed = 1f;
     public GameObject speedingItem;
     public List<GameObject> targetItemA;
 
-    //2
+    //2 SHOOT SPEED
     public int howmanyItemsB = 15;
     public GameObject shootingItem;
     public List<GameObject> targetItemB;
-
+    //
+    public UnityEvent SpeedUp = new UnityEvent();
+    public UnityEvent LaserFast = new UnityEvent();
+    //
+   
     void Start()
     {
         GenerateStarsType1();
@@ -43,7 +47,8 @@ public class Spawner : MonoBehaviour
 
     void Update()
     {
-       // MoveEnemiesTowardsPlayer();
+        // MoveEnemiesTowardsPlayer();
+        CheckCollisions();
     }
 
     void GenerateStarsType1()
@@ -126,6 +131,31 @@ public class Spawner : MonoBehaviour
             targetItemA.Add(newTarget);
         }
     }
+
+    void CheckCollisions()
+    {
+        for (int i = targetItemA.Count - 1; i >= 0; i--) // Loop from last to first
+        {
+           // Debug.Log(i);
+            GameObject theItem = targetItemA[i];
+            Vector3 Pposition = new Vector3(player.transform.position.x, player.transform.position.y,0) ;
+
+       //     Debug.Log("Item position: " + item.transform.position);
+         //   Debug.Log("Player position: " + Pposition);
+
+            float distance = Vector3.Distance(Pposition, theItem.transform.position);
+         //   Debug.Log("Distance to item: " + distance);
+
+            if (distance < 0.5f) // Collision threshold
+            {
+              // Debug.Log("Eat item");
+                SpeedUp.Invoke();
+                //Destroy(theItem);
+                theItem.SetActive(false);
+            }
+        }
+    }
+
 
     //void MoveEnemiesTowardsPlayer()
     //{

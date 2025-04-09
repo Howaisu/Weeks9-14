@@ -81,7 +81,7 @@ public class ShootingManager : MonoBehaviour
         }
     }
     //Item: Shooting Speed Up
-    void ShootSpeedUp()
+    public void ShootSpeedUp()
     {
 
         spawnFrequency = spawnFrequency / 2;
