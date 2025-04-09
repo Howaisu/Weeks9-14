@@ -39,27 +39,23 @@ public class Spawner : MonoBehaviour
    
     void Start()
     {
-        GenerateStarsType1();
-        GenerateStarsType2();
+        SpawnStars(starPrefab_A, star1Count);
+        SpawnStars(starPrefab_B, star2Count);
         spawnController();
-        itemGenerator();
+        //itemGenerator(speedingItem,howmanyItemsA);
+        //itemGenerator(shootingItem, howmanyItemsB);
+        itemGeneratorA();
+        itemGeneratorB();
     }
 
     void Update()
     {
         // MoveEnemiesTowardsPlayer();
         CheckCollisions();
+        CheckCollisionB();
     }
 
-    void GenerateStarsType1()
-    {
-        SpawnStars(starPrefab_A, star1Count);
-    }
-
-    void GenerateStarsType2()
-    {
-        SpawnStars(starPrefab_B, star2Count);
-    }
+ 
 
     void SpawnStars(GameObject prefab, int count)
     {
@@ -108,9 +104,10 @@ public class Spawner : MonoBehaviour
 
     //Item Generate
 
-    void itemGenerator()
+    void itemGeneratorA()
     {
         targetItemA = new List<GameObject>();
+      
 
         Vector3 topLeftPos = topLeft.transform.position;
         Vector3 downBottomPos = downBottom.transform.position;
@@ -131,9 +128,34 @@ public class Spawner : MonoBehaviour
             targetItemA.Add(newTarget);
         }
     }
+    void itemGeneratorB()
+    {
+        targetItemB = new List<GameObject>();
+
+
+        Vector3 topLeftPos = topLeft.transform.position;
+        Vector3 downBottomPos = downBottom.transform.position;
+        //I think this function can be write once, but Imma keeping like this for now
+        float minX = Mathf.Min(topLeftPos.x, downBottomPos.x);
+        float maxX = Mathf.Max(topLeftPos.x, downBottomPos.x);
+        float minY = Mathf.Min(topLeftPos.y, downBottomPos.y);
+        float maxY = Mathf.Max(topLeftPos.y, downBottomPos.y);
+
+        for (int i = 0; i < howmanyItemsB; i++)
+        {
+            float randomX = Random.Range(minX, maxX);
+            float randomY = Random.Range(minY, maxY);
+
+            GameObject newTarget = Instantiate(shootingItem);
+            newTarget.transform.position = new Vector3(randomX, randomY, 0);
+
+            targetItemB.Add(newTarget);
+        }
+    }
 
     void CheckCollisions()
     {
+        //ITEM A
         for (int i = targetItemA.Count - 1; i >= 0; i--) // Loop from last to first
         {
            // Debug.Log(i);
@@ -154,6 +176,36 @@ public class Spawner : MonoBehaviour
                 theItem.SetActive(false);
             }
         }
+
+    }
+    //I tried to write the collision together, but it have errors, so I am keep like this
+    void CheckCollisionB()
+    {
+
+
+        //ITEM B
+        for (int i = targetItemB.Count - 1; i >= 0; i--) // Loop from last to first
+        {
+            // Debug.Log(i);
+            GameObject items = targetItemB[i];
+            // Vector3 Pposition = new Vector3(player.transform.position.x, player.transform.position.y, 0);
+
+            //     Debug.Log("Item position: " + item.transform.position);
+            //   Debug.Log("Player position: " + Pposition);
+
+            float distance = Vector3.Distance(player.transform.position, items.transform.position);// I've already make player 0 in the other script
+            //   Debug.Log("Distance to item: " + distance);
+
+            if (distance < 0.5f) // Collision threshold
+            {
+                // Debug.Log("Eat item");
+                LaserFast.Invoke();
+                //Destroy(theItem);
+                items.SetActive(false);
+            }
+        }
+
+
     }
 
 

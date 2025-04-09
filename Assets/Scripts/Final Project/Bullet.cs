@@ -81,13 +81,14 @@ public class Bullet : MonoBehaviour
                 spawner.targetEnemy.RemoveAt(i);
 
                 Debug.Log("BOOM! Enemy destroyed!");
-                HitEnemy.Invoke();
+                // HitEnemy.Invoke();
+                GameEvents.OnEnemyHit?.Invoke();
                 //doesn't work at first, because it can't assign anything
                 //I also tried to make it invoke the listener, but listener also need to reference to one, there are too many clones
-               
-             //   Destroy(gameObject); //I think it is still the communication issue, the shooting Manager can't get the 'null' information
-             // I tried more than 3 hours to make this work, but at the end I failed
-                
+
+                //   Destroy(gameObject); //I think it is still the communication issue, the shooting Manager can't get the 'null' information
+                // I tried more than 3 hours to make this work, but at the end I failed
+
                 break;
             }
         }

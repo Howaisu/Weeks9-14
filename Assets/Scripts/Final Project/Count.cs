@@ -1,6 +1,10 @@
 
 using UnityEngine;
 using TMPro;
+public static class GameEvents
+{
+    public static System.Action OnEnemyHit;
+}
 
 public class Count : MonoBehaviour
 {
@@ -10,15 +14,25 @@ public class Count : MonoBehaviour
     public TextMeshProUGUI shootingFrequency;
     //public Bullet kill; // reference Bullet component;; alright, this also not work because there are too many clones
 
-
     public void Start()
     {
-      //  kill.HitEnemy.AddListener(AddOne);
+        counterText.text = "Count: " + count;
+        //  kill.HitEnemy.AddListener(AddOne);
     }
-    // 在 UnityEvent 中调用这个
-    public void AddOne()
+   
+
+    void OnEnable()
     {
-        Debug.Log("+1");
+        GameEvents.OnEnemyHit += IncreaseCount;
+    }
+
+    void OnDisable()
+    {
+        GameEvents.OnEnemyHit -= IncreaseCount;
+    }
+
+    void IncreaseCount()
+    {
         count++;
         counterText.text = "Count: " + count;
     }

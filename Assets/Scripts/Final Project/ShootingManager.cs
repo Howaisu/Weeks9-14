@@ -19,11 +19,16 @@ public class ShootingManager : MonoBehaviour
 
     public float spawnFrequency = 0.2f;
 
-    public GameObject spawnerObject; //  拖入 Spawner GameObject（带 Spawner 脚本的）
+    public GameObject spawnerObject; // 
+    public Spawner spawner;
 
     void Start()
     {
         StartCoroutine(GenerateRoutine()); //RUN the loop ALL TIME in game
+        if (spawner != null && spawner.LaserFast != null)
+        {
+            spawner.LaserFast.AddListener(ShootSpeedUp);
+        }
     }
 
     void Update()
@@ -83,7 +88,7 @@ public class ShootingManager : MonoBehaviour
     //Item: Shooting Speed Up
     public void ShootSpeedUp()
     {
-
+        Debug.Log("Commucated EVENT: shooting speed++");
         spawnFrequency = spawnFrequency / 2;
     }
     //Switch Buttons
