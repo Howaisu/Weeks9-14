@@ -2,26 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+/// <summary>
+/*
+    This code is attached to Game Controller
+    It is for generating the game assets on map, including: stars, enemis, and items
+    
+    It also includes the function of eating(collision), because the data of each array can be using directly
 
+ 
+ */
+/// </summary>
 public class Spawner : MonoBehaviour
 {
+    //two kinds of stars
     public GameObject starPrefab_A;
     public GameObject starPrefab_B;
-
+    //the generation area [limitor]
     public GameObject topLeft;
     public GameObject downBottom;
-
+    //how many stars
     public int star1Count = 200;
     public int star2Count = 150;
-
+    //ENEMY
     public GameObject enemy;
     public int howmanyEnemy = 60;
     public List<GameObject> targetEnemy;
-
-    public GameObject player;  // Reference to the player GameObject
+    //PLAYER
+    public GameObject player;  // Reference to the player GameObject, using for collision
 
     public float npcSpeed = 2f;
-    //Items
+    //-----------Items
     //1 MOVEMENT SPEED
     public int howmanyItemsA = 10;
     public float floatingSpeed = 1f;
@@ -32,19 +42,21 @@ public class Spawner : MonoBehaviour
     public int howmanyItemsB = 15;
     public GameObject shootingItem;
     public List<GameObject> targetItemB;
-    //
+    //------------
+    ////EVENT 
     public UnityEvent SpeedUp = new UnityEvent();
     public UnityEvent LaserFast = new UnityEvent();
-    //
-   
+     public UnityEvent HitEnemy = new UnityEvent();
+
+
     void Start()
     {
-        SpawnStars(starPrefab_A, star1Count);
+        SpawnStars(starPrefab_A, star1Count);   //Generate stars
         SpawnStars(starPrefab_B, star2Count);
         spawnController();
         //itemGenerator(speedingItem,howmanyItemsA);
         //itemGenerator(shootingItem, howmanyItemsB);
-        itemGeneratorA();
+        itemGeneratorA();   //Generate the items
         itemGeneratorB();
     }
 
@@ -53,27 +65,32 @@ public class Spawner : MonoBehaviour
         // MoveEnemiesTowardsPlayer();
         CheckCollisions();
         CheckCollisionB();
+        
+
     }
 
- 
 
+    //Those are the limitor for spawn items. 
+    //Each time through the loop, a random x and y coordinate is chosen within the bounds.
+    //These random coordinates are combined to form a spawn position(spawnPos).
     void SpawnStars(GameObject prefab, int count)
     {
+        //These are two objects I put inside the map, to get the edge's position
         Vector3 topLeftPos = topLeft.transform.position;
         Vector3 downBottomPos = downBottom.transform.position;
-
+        //get the Interval first
         float minX = Mathf.Min(topLeftPos.x, downBottomPos.x);
         float maxX = Mathf.Max(topLeftPos.x, downBottomPos.x);
         float minY = Mathf.Min(topLeftPos.y, downBottomPos.y);
         float maxY = Mathf.Max(topLeftPos.y, downBottomPos.y);
-
+        //EACH TIME, get a random number between the limits, and then generate the object based on the prefab.
         for (int i = 0; i < count; i++)
         {
-            float randomX = Random.Range(minX, maxX);
+            float randomX = Random.Range(minX, maxX); 
             float randomY = Random.Range(minY, maxY);
 
             Vector3 spawnPos = new Vector3(randomX, randomY, 0);
-
+            //combines the positions to a Vector3
             Instantiate(prefab, spawnPos, Quaternion.identity);
         }
     }
@@ -152,7 +169,8 @@ public class Spawner : MonoBehaviour
             targetItemB.Add(newTarget);
         }
     }
-
+    //This code is similar to the code I used in last assignment, BUT!! I used more than half an hour to fix the problem, the problem is
+    //the player is not in the same z value with the target objects! Change to Vector can't help anything.fixed by LOCK Z to 0
     void CheckCollisions()
     {
         //ITEM A
@@ -172,7 +190,7 @@ public class Spawner : MonoBehaviour
             {
               // Debug.Log("Eat item");
                 SpeedUp.Invoke();
-                //Destroy(theItem);
+                //Destroy(theItem); //Idk why it destroy the prefab
                 theItem.SetActive(false);
             }
         }
@@ -207,8 +225,15 @@ public class Spawner : MonoBehaviour
 
 
     }
+    //Invoke the event of killing enemy from here, I want to do the kill-streak inside Count if have time
+    public void killEnemy()
+    {
+        Debug.Log("Trigger the Event");
+        HitEnemy.Invoke();
+    
+    }
 
-
+    /////Moved this code to Enemy.cs
     //void MoveEnemiesTowardsPlayer()
     //{
     //    if (player == null) return;

@@ -1,18 +1,32 @@
 using UnityEngine;
 using UnityEngine.Events;
+/*
+ This code might not look very long, but it is the hardest code in my project!!
+ Because this code is attached on the Prefab of laser, so all the data is difficult to transfer
+ Over 8 hours spent on this code, not gonna lie.
+ 
+ */
+
 public class Bullet : MonoBehaviour
 {
     public bool isFired = false;
     public float speed = 20;
 
     public GameObject enemySpawner;
-    private Spawner spawner; // ÒýÓÃSpawner½Å±¾
-                             //
-    //public UnityEvent HitEnemy;  
-    public UnityEvent HitEnemy = new UnityEvent();
+    private Spawner spawner; // Refeence to Spawner 
+                             // Thank to Bullet bulletScript = laser.GetComponent<Bullet>();when generating it. It can reference another code YEAH
+   
+      // I tried to invoke events, but none of them work
+     //public UnityEvent HitEnemy;  
+    // public UnityEvent HitEnemy = new UnityEvent();
+    //
+    //public GameObject UI;
+    //private Count counter; //
+
     private void Start()
     {
         spawner = enemySpawner.GetComponent<Spawner>();
+       
 
     }
 
@@ -38,7 +52,7 @@ public class Bullet : MonoBehaviour
             //transform.up = direction;
         }
     }
-
+    //The fire method call by Shoots() in ShootingManger,a code learned from in in-class activity
     public void Fire()
     {
         isFired = true;
@@ -57,6 +71,7 @@ public class Bullet : MonoBehaviour
 
     public void CheckHitEnemies()
     {
+        
         //There was a HUGE problem with the hitting enemies. I thought it would be as easy as my fish project, but it was not!
         /*
          The prefab can't assign a GameObject, and I don't know it at beginning, I used debug to check which area have problem for so many times
@@ -79,10 +94,12 @@ public class Bullet : MonoBehaviour
             {
                 Destroy(enemy);
                 spawner.targetEnemy.RemoveAt(i);
-
+                spawner.killEnemy();//OKAY? It is simple like that??? I spend hours and hours try to find out how this communicate, but the Invoke still failed
                 Debug.Log("BOOM! Enemy destroyed!");
-                // HitEnemy.Invoke();
-                GameEvents.OnEnemyHit?.Invoke();
+                //counter.count ++;
+                // HitEnemy.Invoke();//This is the first try
+                //GameEvents.OnEnemyHit?.Invoke();//The try of the pro event communication, but it is out of scope
+
                 //doesn't work at first, because it can't assign anything
                 //I also tried to make it invoke the listener, but listener also need to reference to one, there are too many clones
 
@@ -96,3 +113,5 @@ public class Bullet : MonoBehaviour
 
     }
 }
+
+// Sooo tired :(
