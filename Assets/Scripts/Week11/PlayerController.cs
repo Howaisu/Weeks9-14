@@ -10,10 +10,13 @@ public class PlayerController : MonoBehaviour
     public bool canRun = true;
     public AudioClip[] footsteps; // 存储所有footstep音频的数组
     private AudioSource audioSource; // 用于播放音频的组件
+<<<<<<< HEAD
     float t = 0;
     bool isJumping;
 
     public AnimationCurve jump;
+=======
+>>>>>>> Week11
    
 
     // Start is called before the first frame update
@@ -47,6 +50,7 @@ public class PlayerController : MonoBehaviour
         if (canRun == true)
         {
             transform.position += transform.right * direction * speed * Time.deltaTime;
+<<<<<<< HEAD
 
             if (Input.GetKeyDown(KeyCode.Space)&&!isJumping)
             {
@@ -80,6 +84,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
+=======
+        }
+    }
+
+>>>>>>> Week11
     public void AttackHasFinishedd()
     {
 
@@ -90,9 +99,14 @@ public class PlayerController : MonoBehaviour
 
     public void FootSteps()
     {
+<<<<<<< HEAD
        
         int R = Random.Range(0, 9); // 随机选择一个索引
         Debug.Log("step out the sound "+ R);
+=======
+        Debug.Log("step on the groud.");
+        int R = Random.Range(0, 9); // 随机选择一个索引
+>>>>>>> Week11
         audioSource.clip = footsteps[R]; // 设置AudioSource要播放的clip
         audioSource.Play(); // 播放音频
 
